@@ -53,11 +53,8 @@ app = FastAPI(title="Chatbot Experiment Platform")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ariv-one.vercel.app",
-        "https://ariv-7e32depv1-midunakaviyas-projects.vercel.app",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
