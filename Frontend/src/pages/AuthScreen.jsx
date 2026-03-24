@@ -3,6 +3,9 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const API = import.meta.env.VITE_API_URL;
+console.log("API BASE:", API);
+
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 const PASSWORD_RE = /^.{6,}$/;
 
@@ -191,7 +194,7 @@ function SignInForm({ role, isParticipant, navigate }) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/auth/login", {
+        const res = await fetch('${API}/auth/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -326,7 +329,7 @@ function ParticipantSignUpForm({ role, navigate }) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/auth/register", {
+      const res = await fetch('${API}/auth/register',{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -507,7 +510,7 @@ function CompanySignUpForm({ role, navigate }) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/auth/register", {
+      const res = await fetch('${API}/auth/register',{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
