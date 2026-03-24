@@ -49,14 +49,13 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 app = FastAPI(title="Chatbot Experiment Platform")
+@app.options("/{full_path:path}")
+async def options_handler():
+    return {"message": "OK"}
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    # "http://localhost:5173",
-    # "https://ariv-one.vercel.app",
-
-    # allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
