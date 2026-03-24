@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Check, Plus, Trash2 } from "lucide-react";
 
-// const API_BASE = "http://localhost:8000";
+
 const API = import.meta.env.VITE_API_URL;
 
 

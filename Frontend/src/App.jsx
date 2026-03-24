@@ -31,6 +31,7 @@ import ChatWindow from "./pages/ChatWindow";
 // ─── Layouts ──────────────────────────────────────────────────────────────
 import AppLayout from "./layouts/AppLayout";         // Company sidebar + layout
 import PublicLayout from "./layouts/PublicLayout";
+const API = import.meta.env.VITE_API_URL;
 
 // ─── Protected Route Component ───────────────────────────────────────────
 const ProtectedRoute = ({ requiredRole }) => {
@@ -85,7 +86,7 @@ export default function App() {
     }
 
     // Verify token and get current user info
-    fetch("http://localhost:8000/auth/me", {
+    fetch(`${API}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => {
