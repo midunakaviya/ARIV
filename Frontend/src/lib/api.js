@@ -2,7 +2,7 @@
 const API_BASE = import.meta.env.VITE_API_URL;
 
 if (!API_BASE) {
-  console.error("❌ VITE_API_URL is not defined in environment variables");
+  console.error(" VITE_API_URL is not set in Vercel environment variables!");
 }
 
 const api = {
@@ -15,43 +15,37 @@ const api = {
       ...options.headers,
     };
 
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers,
-    });
-
-    let data;
     try {
-      data = await response.json();
-    } catch (e) {
-      data = {};
-    }
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers,
+      });
 
-    if (!response.ok) {
-      throw new Error(data.detail || data.message || `Request failed with status ${response.status}`);
-    }
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
-    return data;
+      if (!response.ok) {
+        throw new Error(data.detail || data.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error(`API Error ${endpoint}:`, error);
+      throw error;
+    }
   },
 
-  get(endpoint) {
-    return this.request(endpoint);
-  },
-
+  get(endpoint) { return this.request(endpoint); },
   post(endpoint, body) {
-    return this.request(endpoint, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
+    return this.request(endpoint, { method: "POST", body: JSON.stringify(body) });
   },
-
   put(endpoint, body) {
-    return this.request(endpoint, {
-      method: "PUT",
-      body: JSON.stringify(body),
-    });
+    return this.request(endpoint, { method: "PUT", body: JSON.stringify(body) });
   },
-
   delete(endpoint) {
     return this.request(endpoint, { method: "DELETE" });
   },

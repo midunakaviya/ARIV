@@ -52,7 +52,7 @@ export default function YourExperiments({ user }) {
     const enriched = await Promise.all(
   data.map(async (exp) => {
     const partsRes = await fetch(
-      `${API_URL}/experiments/${exp.id}/participants`,
+      `${API}/experiments/${exp.id}/participants`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
