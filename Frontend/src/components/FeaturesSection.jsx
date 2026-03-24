@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
 
 export default function FeaturesSection() {
   const navigate = useNavigate();
@@ -36,9 +36,9 @@ export default function FeaturesSection() {
         const headers = { Authorization: `Bearer ${token}` };
 
         const [experimentsRes, chatbotsRes, dashboardRes] = await Promise.all([
-          fetch(`${API_BASE}/experiments`, { headers }).then((r) => r.json()),
-          fetch(`${API_BASE}/chatbots`, { headers }).then((r) => r.json()),
-          fetch(`${API_BASE}/dashboard`, { headers }).then((r) => r.json()),
+          fetch(`${API}/experiments`, { headers }).then((r) => r.json()),
+          fetch(`${API}/chatbots`, { headers }).then((r) => r.json()),
+          fetch(`${API}/dashboard`, { headers }).then((r) => r.json()),
         ]);
 
         setStats({

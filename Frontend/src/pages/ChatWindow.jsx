@@ -342,7 +342,7 @@ export default function ChatWindow() {
   const callLLM = async (userMessage) => {
     try {
       const backendUrl =
-        import.meta.env.VITE_API_URL || "http://localhost:8000";
+        import.meta.env.VITE_API_URL;
 
       const payload = {
         provider: "groq",
