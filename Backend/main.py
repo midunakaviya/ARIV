@@ -3690,7 +3690,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://ariv-oglj79zd5-midunakaviyas-projects.vercel.app",
+    "https://ariv-one.vercel.app",
 ],
     # allow_origins=["http://localhost:5173"],
     allow_credentials=True,
