@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
 
 // Maask brand colors
 const BRAND = {
@@ -52,14 +52,14 @@ export default function ParticipantView() {
         let partData = null;
 
         if (isActiveSession) {
-          const res = await fetch(`${API_BASE}/experiments/by-session/${sessionId}`);
+          const res = await fetch(`${API}/experiments/by-session/${sessionId}`);
           if (!res.ok) throw new Error(await res.text() || "Invalid session");
           expData = await res.json();
           setVariant(Math.random() < 0.5 ? "A" : "B");
         } else if (isPortalView) {
           if (!token) throw new Error("Please log in");
           const partRes = await fetch(
-            `${API_BASE}/participants/me/experiment/${experimentId}`,
+            `${API}/participants/me/experiment/${experimentId}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           if (!partRes.ok) throw new Error(await partRes.text() || "Not participating");
@@ -146,7 +146,7 @@ export default function ParticipantView() {
     try {
       setSubmitting(true);
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE}/survey_results`, {
+      const res = await fetch(`${API}/survey_results`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export default function ParticipantView() {
         const expId = experiment?.id;
         if (!expId) throw new Error("Missing experiment ID");
 
-        const res = await fetch(`${API_BASE}/participants/complete/${expId}`, {
+        const res = await fetch(`${API}/participants/complete/${expId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

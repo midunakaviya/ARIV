@@ -21,7 +21,10 @@ import {
   Legend,
 } from "recharts";
 
-const API_URL = "http://localhost:8000";
+// const API_URL = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
+
+fetch(`${API}/dashboard`)
 
 // const COLORS = ["#6366f1", "#a855f7", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 // const COLORS = [

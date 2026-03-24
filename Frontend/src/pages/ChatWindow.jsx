@@ -26,6 +26,8 @@ import {
   User,
 } from "lucide-react";
 
+const API = import.meta.env.VITE_API_URL;
+
 const sendIconOptions = [
   { value: "send", icon: Send, label: "Send" },
   { value: "arrowright", icon: ArrowRight, label: "Right Arrow" },
@@ -88,7 +90,7 @@ export default function ChatWindow() {
   const fetchChatbot = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8000/chatbots/public/${id}?_=${Date.now()}`,
+        `${API}/chatbots/public/${id}?_=${Date.now()}`,
       );
       if (!res.ok) throw new Error("Failed to load chatbot - is it public?");
       const data = await res.json();
@@ -340,7 +342,7 @@ export default function ChatWindow() {
   const callLLM = async (userMessage) => {
     try {
       const backendUrl =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+        import.meta.env.VITE_API_URL || "http://localhost:8000";
 
       const payload = {
         provider: "groq",
@@ -476,7 +478,7 @@ export default function ChatWindow() {
 
   // 2. Call the hybrid backend endpoint
   try {
-    const res = await fetch(`http://localhost:8000/chatbots/${id}/chat`, {
+    const res = await fetch(`${API}/chatbots/${id}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: safeText }),

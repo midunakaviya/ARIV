@@ -34,7 +34,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const API_BASE = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
+
 const TABS = ["General", "Participants", "Surveys", "Flow"];
 
 //Sortable Flow Item
@@ -448,7 +449,7 @@ export default function ExperimentConfig() {
   useEffect(() => {
     const load = async () => {
       try {
-        const botRes = await fetch(`${API_BASE}/chatbots`, {
+        const botRes = await fetch(`${API}/chatbots`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (botRes.ok) {
@@ -456,7 +457,7 @@ export default function ExperimentConfig() {
         }
 
         if (experimentId && experimentId !== "new") {
-          const expRes = await fetch(`${API_BASE}/experiments/${experimentId}`, {
+          const expRes = await fetch(`${API}/experiments/${experimentId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (expRes.ok) {
@@ -526,7 +527,7 @@ export default function ExperimentConfig() {
 
     try {
       const method = experiment.id ? "PUT" : "POST";
-      const url = experiment.id ? `${API_BASE}/experiments/${experiment.id}` : `${API_BASE}/experiments`;
+      const url = experiment.id ? `${API}/experiments/${experiment.id}` : `${API}/experiments`;
 
       const res = await fetch(url, {
         method,
@@ -576,7 +577,7 @@ export default function ExperimentConfig() {
     const id = await saveExperiment();
     if (!id) throw new Error("Draft save failed");
 
-    const res = await fetch(`${API_BASE}/experiments/${id}/finalize`, {
+    const res = await fetch(`${API}/experiments/${id}/finalize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

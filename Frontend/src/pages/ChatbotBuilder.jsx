@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
 
+const API = import.meta.env.VITE_API_URL;
 
 
 const addMessage = (text, sender) => {
@@ -343,7 +344,7 @@ useEffect(() => {
     setIsLoading(true);
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8000/chatbots/${chatbotId}`, {
+    fetch(`${API}/chatbots/${chatbotId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => {
@@ -440,7 +441,7 @@ useEffect(() => {
 
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:8000/upload/avatar", {
+    const res = await fetch(`${API}/upload/avatar`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -1479,8 +1480,8 @@ const saveChatbot = async () => {
     if (!token) throw new Error("No token. Please log in again.");
     const method = chatbotId ? "PUT" : "POST";
     const url = chatbotId
-      ? `http://localhost:8000/chatbots/${chatbotId}`
-      : "http://localhost:8000/chatbots";
+      ? `${API}/chatbots/${chatbotId}`
+      : "${API}/chatbots";
     const res = await fetch(url, {
       method,
       headers: {
@@ -1876,7 +1877,7 @@ const saveChatbot = async () => {
   onClick={() => {
     const chatId = localChatbotId || chatbotId;
     if (chatId) {
-      const publicUrl = `http://localhost:5173/chat/${chatId}`;
+      const publicUrl = `${API}/chat/${chatId}`;
       window.open(publicUrl, '_blank', 'noopener,noreferrer');
     } else {
       alert("Please save the chatbot first — we need an ID to generate the public link!");

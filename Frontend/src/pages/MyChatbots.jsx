@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Edit, Trash2, Bot, ExternalLink } from "lucide-react";
 
+const API = import.meta.env.VITE_API_URL;
+
 const defaultAvatars = [
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=face",
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face",
@@ -20,7 +22,7 @@ export default function MyChatbots() {
     const fetchChatbots = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8000/chatbots", {
+        const res = await fetch(`${API}/chatbots`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch");
@@ -41,7 +43,7 @@ export default function MyChatbots() {
 
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:8000/chatbots/${id}`, {
+      await fetch(`${API}/chatbots/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -101,7 +103,7 @@ export default function MyChatbots() {
                 <div className="h-48 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center relative">
                   {bot.avatar_url ? (
                     <img
-                      src={bot.avatar_url?.startsWith('http') ? bot.avatar_url : `http://localhost:8000${bot.avatar_url}`}
+                      src={bot.avatar_url?.startsWith('http') ? bot.avatar_url : `${API}${bot.avatar_url}`}
                       alt={bot.name}
                       className="w-32 h-32 rounded-full border-8 border-white shadow-2xl object-cover"
                     />

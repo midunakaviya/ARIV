@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Download, ArrowLeft, Eye, Edit, Trash2, Loader2 } from "lucide-react";
 
-const API_URL = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
 
 const TABS = [
   { label: "All", value: null },
@@ -33,7 +33,7 @@ export default function YourExperiments({ user }) {
     setError(null);
 
     try {
-      let url = `${API_URL}/experiments`;
+      let url = `${API}/experiments`;
       if (status) {
         url += `?status=${status}`;
       }
@@ -145,7 +145,7 @@ export default function YourExperiments({ user }) {
   const handleExport = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`${API_URL}/dashboard/export`, {
+      const res = await fetch(`${API}/dashboard/export`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -201,7 +201,7 @@ const getStatusBadge = (status) => {
     if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
 
     try {
-      const res = await fetch(`${API_URL}/experiments/${id}`, {
+      const res = await fetch(`${API}/experiments/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

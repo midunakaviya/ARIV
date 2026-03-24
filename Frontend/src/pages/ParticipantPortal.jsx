@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Loader2, AlertCircle, Trophy } from "lucide-react";
 
+const API = import.meta.env.VITE_API_URL;
 export default function ParticipantPortal({ user }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("experiments");
@@ -31,7 +32,7 @@ export default function ParticipantPortal({ user }) {
         setLoading(true);
         setError(null);
 
-        const res = await axios.get("http://localhost:8000/participants/me/dashboard", {
+        const res = await axios.get(`${API}/participants/me/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 10000,
         });

@@ -2,7 +2,9 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Check, Plus, Trash2 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+// const API_BASE = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL;
+
 
 /* -------------------------------
    Helpers
@@ -466,7 +468,8 @@ export default function AddSurvey() {
   useEffect(() => {
     if (!experimentId || experimentId === "new") return;
 
-    fetch(`${API_BASE}/experiments/${experimentId}`, {
+    //fetch(`${API_BASE}/experiments/${experimentId}`, {
+    fetch(`${API}/experiments/${experimentId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -520,7 +523,7 @@ export default function AddSurvey() {
           key === "demographics" ? demographicQuestions : survey.questions;
 
         const response = await fetch(
-          `${API_BASE}/experiments/${experimentId}/add-survey`,
+          `${API}/experiments/${experimentId}/add-survey`,
           {
             method: "POST",
             headers: {
