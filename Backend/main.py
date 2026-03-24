@@ -86,7 +86,7 @@ def get_db_connection():
             port=int(os.getenv("DB_PORT", 10753)),
             ssl_disabled=False,
             ssl_ca=None,
-            ssl_verify_cert=True,
+            ssl_verify_cert=False,
             ssl_verify_identity=False,
 
             connect_timeout=20,
@@ -95,6 +95,7 @@ def get_db_connection():
             autocommit=True,
 
 )
+        print("Aiven DB Connection successful")
         return conn
     except Error as e:
         error_msg = f"Aiven DB connection failed(port {os.getenv('DB_PORT')}): {str(e)}"
