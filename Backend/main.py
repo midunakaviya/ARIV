@@ -3688,7 +3688,11 @@ app = FastAPI(title="Chatbot Experiment Platform")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+    "http://localhost:5173",
+    "https://chatbot-experiment-platform.vercel.app",
+],
+    # allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -3703,13 +3707,21 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # -------------------------------
 def get_db_connection():
     try:
+        # conn = mysql.connector.connect(
+        #     host="localhost",
+        #     user="root",
+        #     password="",
+        #     database="chatbot_experiments",
+        #     port=3306,
+        # )
         conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="chatbot_experiments",
-            port=3306,
-        )
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME"),
+            port=int(os.getenv("DB_PORT", 3306)),
+            ssl_disabled=True
+)
         return conn
     except Error as e:
         raise HTTPException(status_code=500, detail=f"DB connection error: {e}")
