@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+mysql-connector-python
+PyJWT
+python-dotenv
+SQLAlchemy
+resend
+httpx
+PyJWT
+python-multipart
+python-dotenv
+email-validator
+rapidfuzz>=3.0
