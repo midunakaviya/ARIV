@@ -83,12 +83,23 @@ def get_db_connection():
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
             database=os.getenv("DB_NAME"),
-            port=int(os.getenv("DB_PORT", 3306)),
-            ssl_disabled=False
+            port=int(os.getenv("DB_PORT", 10753)),
+            ssl_disabled=False,
+            ssl_ca=None,
+            ssl_verify_cert=True,
+            ssl_verify_identity=False,
+
+            connect_timeout=20,
+            charset='utf8mb4',
+            collation='utf8mb4_unicode_ci',
+            autocommit=True,
+
 )
         return conn
     except Error as e:
-        raise HTTPException(status_code=500, detail=f"DB connection error: {e}")
+        error_msg = f"Aiven DB connection failed(port {os.getenv('DB_PORT')}): {str(e)}"
+        print(error_msg)                   
+        raise HTTPException(status_code=500, detail=error_msg)
 
 
 @contextmanager
@@ -402,24 +413,52 @@ def register(user: UserRegister):
     return {"access_token": token, "token_type": "bearer"}
 
 
+# @app.post("/auth/login")
+# def login(user: UserLogin):
+#     db_user = fetch_one("SELECT * FROM users WHERE email=%s", (user.email,))
+#     if not db_user:
+#         raise HTTPException(400, "Incorrect email or password")
+    
+#     password_hash = hashlib.sha256(user.password.encode()).hexdigest()
+#     if db_user["password_hash"] != password_hash:
+#         raise HTTPException(400, "Incorrect email or password")
+
+#     access_token = create_access_token({"user_id": db_user["id"]})
+
+#     return {
+#         "access_token": access_token,
+#         "token_type": "bearer",
+#         "role": db_user["role"],              # ← ADD
+#         "user_type": db_user["user_type"],    # ← ADD (for compatibility)
+#     } ashok
 @app.post("/auth/login")
 def login(user: UserLogin):
-    db_user = fetch_one("SELECT * FROM users WHERE email=%s", (user.email,))
-    if not db_user:
-        raise HTTPException(400, "Incorrect email or password")
-    
-    password_hash = hashlib.sha256(user.password.encode()).hexdigest()
-    if db_user["password_hash"] != password_hash:
-        raise HTTPException(400, "Incorrect email or password")
+    try:
+        print(f"[LOGIN ATTEMPT] Email: {user.email}")
 
-    access_token = create_access_token({"user_id": db_user["id"]})
+        db_user = fetch_one("SELECT * FROM users WHERE email=%s", (user.email,))
+        if not db_user:
+            print(f"[LOGIN FAILED] User not found: {user.email}")
+            raise HTTPException(400, "Incorrect email or password")
+        
+        password_hash = hashlib.sha256(user.password.encode()).hexdigest()
+        if db_user.get("password_hash") != password_hash:
+            print(f"[LOGIN FAILED] Wrong password for: {user.email}")
+            raise HTTPException(400, "Incorrect email or password")
 
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "role": db_user["role"],              # ← ADD
-        "user_type": db_user["user_type"],    # ← ADD (for compatibility)
-    }
+        access_token = create_access_token({"user_id": db_user["id"]})
+
+        print(f"[LOGIN SUCCESS] User: {user.email} | Role: {db_user.get('role')}")
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "role": db_user.get("role"),
+            "user_type": db_user.get("user_type"),
+        }
+    except Exception as e:
+        print(f"[LOGIN ERROR] Unexpected error for {user.email}: {str(e)}")
+        raise
 
 
 
