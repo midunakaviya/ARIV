@@ -98,7 +98,7 @@ def get_db_connection():
         print("Aiven DB Connection successful")
         return conn
     except Error as e:
-        error_msg = f"Aiven DB connection failed(port {os.getenv('DB_PORT')}): {str(e)}"
+        error_msg = f"Aiven DB connection failed: {str(e)}"
         print(error_msg)                   
         raise HTTPException(status_code=500, detail=error_msg)
 
