@@ -3690,7 +3690,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://chatbot-experiment-platform.vercel.app",
+    "https://ariv-oglj79zd5-midunakaviyas-projects.vercel.app",
 ],
     # allow_origins=["http://localhost:5173"],
     allow_credentials=True,
