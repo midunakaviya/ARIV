@@ -117,7 +117,7 @@ export default function Dashboard({ user }) {
       });
 
       // 2. Participant demographics – from users table (correct endpoint!)
-      const demoRes = await fetch(`${API_URL}/dashboard/participant-demographics`, {
+      const demoRes = await fetch(`${API}/dashboard/participant-demographics`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -147,7 +147,7 @@ export default function Dashboard({ user }) {
   const handleExport = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`${API_URL}/dashboard/export`, {
+      const res = await fetch(`${API}/dashboard/export`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
