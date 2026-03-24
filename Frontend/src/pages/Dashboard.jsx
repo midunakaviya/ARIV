@@ -24,18 +24,8 @@ import {
 
 const API = import.meta.env.VITE_API_URL;
 
-fetch(`${API}/dashboard`)
 
-// const COLORS = ["#6366f1", "#a855f7", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
-// const COLORS = [
-//   "#3b82f6",    // bright blue
-//   "#60a5fa",    // light bright blue
-//   "#93c5fd",    // soft blue
-//   "#1d4ed8",    // deep blue
-//   "#2563eb",    // strong royal blue
-//   "#bfdbfe",    // very light blue
-//   "#1e40af"     // dark navy-ish blue
-// ];
+
 
 const COLORS = [
   "#A855F7",    // 5 – vivid vibrant purple (accents, active states)
@@ -93,7 +83,7 @@ export default function Dashboard({ user }) {
 
     try {
       // 1. Main dashboard stats (total participants, completion rate, experiments)
-      const dashboardRes = await fetch(`${API_URL}/dashboard`, {
+      const dashboardRes = await fetch(`${API}/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
