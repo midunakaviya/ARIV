@@ -1,9 +1,13 @@
 // src/lib/api.js
-const API_BASE = import.meta.env.VITE_API_URL || 'https://chatbot-backend-r766.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL;
+
+if (!API_BASE) {
+  console.error("❌ VITE_API_URL is not defined in environment variables");
+}
 
 const api = {
   async request(endpoint, options = {}) {
-    const token = localStorage.getItem("token");   // or "access_token" if you use that
+    const token = localStorage.getItem("access_token") || localStorage.getItem("token");
 
     const headers = {
       "Content-Type": "application/json",
@@ -11,23 +15,25 @@ const api = {
       ...options.headers,
     };
 
-    const config = {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
       headers,
-    };
+    });
 
-    const response = await fetch(`${API_BASE}${endpoint}`, config);
-
-    const data = await response.json().catch(() => ({}));
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = {};
+    }
 
     if (!response.ok) {
-      throw new Error(data.detail || data.message || "Something went wrong");
+      throw new Error(data.detail || data.message || `Request failed with status ${response.status}`);
     }
 
     return data;
   },
 
-  // Helper methods
   get(endpoint) {
     return this.request(endpoint);
   },
@@ -47,10 +53,8 @@ const api = {
   },
 
   delete(endpoint) {
-    return this.request(endpoint, {
-      method: "DELETE",
-    });
+    return this.request(endpoint, { method: "DELETE" });
   },
 };
 
-export { api };
+export default api;
