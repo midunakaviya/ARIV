@@ -24,9 +24,6 @@ import {
 
 const API = import.meta.env.VITE_API_URL;
 
-
-
-
 const COLORS = [
   "#A855F7",    // 5 – vivid vibrant purple (accents, active states)
   "#4f1b7c",    // 6 – rich strong purple (main buttons, sidebar base)

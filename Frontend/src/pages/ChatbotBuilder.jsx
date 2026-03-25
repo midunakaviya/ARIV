@@ -1410,109 +1410,187 @@ const getQuickReplyAlignClass = () => { // NEW
             <SelectedSendIcon className={COMPACT ? "w-5 h-5" : "w-6 h-6"} />
           </button>
         </div>
-      </div>
+      </div>h
     </div>
   );
 };
 
-
 const saveChatbot = async () => {
   setIsSaving(true);
   setSaveStatus("");
-  const config = {
-    template: selectedTemplate,
-    agentName,
-    agentRole,
-    greetingMessage,
-    conversationalTone,
-    responseStyle,
-    personality,
-    quickActions: quickActions.map(a => ({
-      label: a.label,
-      iconName: a.icon?.displayName || null
-    })),
-    headerColor,
-    headerTextColor,
-    botBubbleColor,
-    botTextColor,
-    sendButtonColor,
-    chatBackground,
-    darkMode,
-    avatarRadius,
-    bubbleRadius,
-    buttonRadius,
-    inputRadius,
-    shadowIntensity,
-    fontFamily,
-    botFontSize,
-    userFontSize,
-    fontWeight,
-    sendButtonIcon,
-    showTypingIndicator,
-    typingIndicatorStyle,
-    typingIndicatorColor,
-    typingIndicatorSize,
-    typingAnimationSpeed,
-    showOnlineStatus,
-    onlineStatusText,
-    showResetButton,
-    showTimestamps,
-    knowledgeText,
-    websiteUrl,
-    qaPairs,
-     onlyKnowledge,
-    isPublic: isPublic,
-    bubbleVariant,
-    showQuickReplies,
-    quickReplyVariant,
-    quickReplyAlignment,
-    showPersistentMenu,
-  };
-  const body = {
+
+  const token = localStorage.getItem("token") || localStorage.getItem("access_token");
+
+  const payload = {
     name: agentName,
-    config,
-    avatar_url: agentAvatar.startsWith("/static") || agentAvatar.startsWith("http")
-      ? agentAvatar
-      : null,
+    config: {
+      agentName,
+      agentRole,
+      conversationalTone,
+      responseStyle,
+      personality,
+      greetingMessage,
+      headerColor,
+      botBubbleColor,
+      botTextColor,
+      sendButtonColor,
+      chatBackground,
+      darkMode,
+      fontFamily,
+      botFontSize,
+      userFontSize,
+      fontWeight,
+      bubbleVariant,
+      showQuickReplies,
+      quickReplyVariant,
+      quickReplyAlignment,
+      showPersistentMenu,
+      isPublic,           // important
+      qaPairs,            // your Q&A pairs
+      // add other fields you want to save
+    },
+    avatar_url: agentAvatar,
   };
+
   try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token. Please log in again.");
-    const method = chatbotId ? "PUT" : "POST";
-    const url = chatbotId
-      ? `${API}/chatbots/${chatbotId}`
-      : "${API}/chatbots";
+    let url = `${API}/chatbots`;
+    let method = "POST";
+
+    if (chatbotId || localChatbotId) {
+      url = `${API}/chatbots/${chatbotId || localChatbotId}`;
+      method = "PUT";
+    }
+
     const res = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     });
+
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.detail || `Save failed (${res.status})`);
+      const errorText = await res.text();
+      throw new Error(errorText || `Save failed (${res.status})`);
     }
-    const data = await res.json();
-    // Always update local ID after any save
-    const newId = data.id || chatbotId || data.chatbot_id;
-    if (newId) {
-      setLocalChatbotId(newId);
-      if (!chatbotId) {
-        navigate(`/chatbot-builder/${newId}`, { replace: true });
-      }
-      setSaveStatus(`Saved successfully! ID: ${newId}`);
-    } else {
-      setSaveStatus("Chatbot saved/updated successfully!");
+
+    const result = await res.json();
+    console.log("Save success:", result);
+
+    setSaveStatus("✅ Chatbot saved successfully!");
+    
+    // If it's a new chatbot, store the ID
+    if (result.chatbot_id && !chatbotId) {
+      // You can navigate or update state here
+      navigate(`/chatbot-builder/${result.chatbot_id}`);
     }
+
   } catch (err) {
-    console.error("Save error:", err);
-    setSaveStatus(`Save failed: ${err.message}`);
+    console.error(err);
+    setSaveStatus(`❌ Save failed: ${err.message}`);
   } finally {
     setIsSaving(false);
   }
 };
+
+// const saveChatbot = async () => {
+//   setIsSaving(true);
+//   setSaveStatus("");
+//   const config = {
+//     template: selectedTemplate,
+//     agentName,
+//     agentRole,
+//     greetingMessage,
+//     conversationalTone,
+//     responseStyle,
+//     personality,
+//     quickActions: quickActions.map(a => ({
+//       label: a.label,
+//       iconName: a.icon?.displayName || null
+//     })),
+//     headerColor,
+//     headerTextColor,
+//     botBubbleColor,
+//     botTextColor,
+//     sendButtonColor,
+//     chatBackground,
+//     darkMode,
+//     avatarRadius,
+//     bubbleRadius,
+//     buttonRadius,
+//     inputRadius,
+//     shadowIntensity,
+//     fontFamily,
+//     botFontSize,
+//     userFontSize,
+//     fontWeight,
+//     sendButtonIcon,
+//     showTypingIndicator,
+//     typingIndicatorStyle,
+//     typingIndicatorColor,
+//     typingIndicatorSize,
+//     typingAnimationSpeed,
+//     showOnlineStatus,
+//     onlineStatusText,
+//     showResetButton,
+//     showTimestamps,
+//     knowledgeText,
+//     websiteUrl,
+//     qaPairs,
+//      onlyKnowledge,
+//     isPublic: isPublic,
+//     bubbleVariant,
+//     showQuickReplies,
+//     quickReplyVariant,
+//     quickReplyAlignment,
+//     showPersistentMenu,
+//   };
+//   const body = {
+//     name: agentName,
+//     config,
+//     avatar_url: agentAvatar.startsWith("/static") || agentAvatar.startsWith("http")
+//       ? agentAvatar
+//       : null,
+//   };
+//   try {
+//     const token = localStorage.getItem("token");
+//     if (!token) throw new Error("No token. Please log in again.");
+//     const method = chatbotId ? "PUT" : "POST";
+//     const url = chatbotId
+//       ? `${API}/chatbots/${chatbotId}`
+//       : "${API}/chatbots";
+//     const res = await fetch(url, {
+//       method,
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(body),
+//     });
+//     if (!res.ok) {
+//       const errData = await res.json().catch(() => ({}));
+//       throw new Error(errData.detail || `Save failed (${res.status})`);
+//     }
+//     const data = await res.json();
+//     // Always update local ID after any save
+//     const newId = data.id || chatbotId || data.chatbot_id;
+//     if (newId) {
+//       setLocalChatbotId(newId);
+//       if (!chatbotId) {
+//         navigate(`/chatbot-builder/${newId}`, { replace: true });
+//       }
+//       setSaveStatus(`Saved successfully! ID: ${newId}`);
+//     } else {
+//       setSaveStatus("Chatbot saved/updated successfully!");
+//     }
+//   } catch (err) {
+//     console.error("Save error:", err);
+//     setSaveStatus(`Save failed: ${err.message}`);
+//   } finally {
+//     setIsSaving(false);
+//   }
+// };
 
   return (
     <>
