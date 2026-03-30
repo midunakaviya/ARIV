@@ -34,7 +34,7 @@ export default function ParticipantPortal({ user }) {
 
         const res = await axios.get(`${API}/participants/me/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
-          timeout: 10000,
+          timeout: 50000,
         });
 
         setDashboard(res.data);

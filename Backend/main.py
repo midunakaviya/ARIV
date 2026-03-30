@@ -86,7 +86,7 @@ def get_db_connection():
             ssl_verify_cert=False,
             ssl_verify_identity=False,
 
-            connect_timeout=20,
+            connect_timeout=50,
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci',
             autocommit=True,
