@@ -404,6 +404,14 @@ def register(user: UserRegister):
                     )
                 )
             user_id = cursor.lastrowid
+            cursor.execute(
+    """
+    INSERT INTO participants
+    (user_id, is_in_pool, consent_given, created_at)
+    VALUES (%s, 1, 1, NOW())
+    """,
+    (user_id,)
+)
         except mysql.connector.IntegrityError:
             raise HTTPException(400, "Email already exists")
 
