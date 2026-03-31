@@ -1250,10 +1250,12 @@ async def create_experiment(
     # ─── Auto-invite from filtered pool (your original logic, improved) ───────
     filters = data.get('filters', {})
     query = """
-      SELECT u.id AS user_id, u.email
-      FROM users u
-      WHERE u.role = 'participant'
-      AND u.id != %s
+        SELECT p.user_id, u.email
+        FROM participants p
+        JOIN users u ON p.user_id = u.id
+        WHERE p.is_in_pool = 1
+          AND p.consent_given = 1
+          AND p.user_id != %s
     """
     params = [user["id"]]
 
